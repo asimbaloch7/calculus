@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#12233f">
+  <title>Calculus &amp; Analytical Geometry — Mid-Term Quiz</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #12233f;
+      --navy-soft: #1d3558;
+      --accent: #c27b32;
+      --accent-dark: #8d521b;
+      --paper: #fff;
+      --canvas: #f3f6fa;
+      --ink: #1b293d;
+      --muted: #64748b;
+      --line: #dce4ee;
+      --green: #18764b;
+      --green-bg: #e8f6ee;
+      --red: #b8323c;
+      --red-bg: #fff0f0;
+      --gray-bg: #edf1f5;
+      --shadow: 0 12px 32px rgb(18 35 63 / 8%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding-bottom: 76px;
+      background: var(--canvas);
+      color: var(--ink);
+      line-height: 1.55;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, a:focus-visible, input:focus-visible + label {
+      outline: 3px solid #e6a957;
+      outline-offset: 3px;
+    }
+
+    .site-header {
+      padding: 28px 24px 24px;
+      background: var(--navy);
+      color: white;
+    }
+
+    .header-inner, main {
+      width: min(1120px, calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .eyebrow {
+      margin: 0 0 5px;
+      color: #d9e3f0;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      line-height: 1.2;
+    }
+
+    .header-subtitle {
+      margin: 9px 0 0;
+      color: #d0dbea;
+      font-size: .97rem;
+    }
+
+    main { padding: 30px 0 42px; }
+    .screen[hidden] { display: none; }
+
+    .notice {
+      margin: 0 0 18px;
+      padding: 12px 16px;
+      border: 1px solid #ecd3ae;
+      border-radius: 10px;
+      background: #fff8eb;
+      color: #68420f;
+    }
+
+    .quiz-layout {
+      display: grid;
+      grid-template-columns: 248px minmax(0, 1fr);
+      align-items: start;
+      gap: 22px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .navigator {
+      position: sticky;
+      top: 18px;
+      min-width: 0;
+      padding: 19px;
+    }
+
+    .navigator h2, .section-title {
+      margin: 0;
+      color: var(--navy);
+      font-size: 1.05rem;
+    }
+
+    .navigator-caption {
+      margin: 3px 0 14px;
+      color: var(--muted);
+      font-size: .83rem;
+    }
+
+    .question-grid {
+      display: grid;
+      width: 100%;
+      min-width: 0;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 7px;
+      max-height: min(52vh, 500px);
+      overflow: auto;
+      padding: 2px 3px 3px 2px;
+      scrollbar-color: #b8c5d5 transparent;
+    }
+
+    .question-jump {
+      min-width: 34px;
+      min-height: 36px;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      font-size: .82rem;
+      font-weight: 650;
+    }
+
+    .question-jump:hover { border-color: var(--accent); }
+    .question-jump.answered { border-color: #a9c5b5; background: var(--green-bg); color: #145c3d; }
+    .question-jump.current { border-color: var(--navy); background: var(--navy); color: white; }
+    .question-jump.current.answered { border-color: var(--navy); background: var(--navy); color: white; }
+
+    .progress-block { margin-top: 16px; }
+    .progress-label { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: .83rem; }
+    progress { width: 100%; height: 9px; margin-top: 7px; accent-color: var(--accent); }
+
+    .question-card { min-width: 0; padding: clamp(20px, 4vw, 34px); }
+    .question-kicker { margin: 0 0 10px; color: var(--accent-dark); font-size: .88rem; font-weight: 750; }
+    .question-prompt { margin: 0 0 24px; color: var(--navy); font-size: clamp(1.08rem, 2.4vw, 1.32rem); font-weight: 650; line-height: 1.65; }
+    .math { font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif; font-weight: 500; }
+    .option-list { display: grid; gap: 11px; }
+
+    .option-row {
+      display: flex;
+      min-height: 54px;
+      align-items: center;
+      gap: 13px;
+      padding: 12px 15px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #fff;
+      cursor: pointer;
+      transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+    }
+
+    .option-row:hover { border-color: #9aabc0; background: #f9fbfd; }
+    .option-row.selected { border-color: var(--navy-soft); background: #edf3fa; box-shadow: inset 0 0 0 1px var(--navy-soft); }
+    .option-row input { width: 18px; height: 18px; flex: 0 0 18px; margin: 0; accent-color: var(--navy); }
+    .option-letter { color: var(--muted); font-weight: 750; }
+    .option-copy { flex: 1; }
+    .option-row.correct-choice { border-color: #78b493; background: var(--green-bg); color: #145c3d; }
+    .option-row.incorrect-choice { border-color: #de969a; background: var(--red-bg); color: #8e252e; }
+    .choice-note { color: inherit; font-size: .78rem; font-weight: 750; }
+
+    .question-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .control-group { display: flex; flex-wrap: wrap; gap: 10px; }
+    .button {
+      display: inline-flex;
+      min-height: 46px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 17px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .15s ease, border-color .15s ease, transform .15s ease;
+    }
+
+    .button:hover { transform: translateY(-1px); }
+    .button:disabled { cursor: not-allowed; opacity: .48; transform: none; }
+    .button-primary { background: var(--navy); color: white; }
+    .button-primary:hover:not(:disabled) { background: var(--navy-soft); }
+    .button-accent { background: var(--accent); color: #1f170e; }
+    .button-accent:hover:not(:disabled) { background: #d28a3c; }
+    .button-secondary { border-color: var(--line); background: white; color: var(--navy); }
+    .button-secondary:hover:not(:disabled) { border-color: #9aabc0; background: #f8fafc; }
+
+    .results-card { padding: clamp(20px, 4vw, 34px); }
+    .results-heading { margin: 0; color: var(--navy); font-size: clamp(1.5rem, 3vw, 2rem); }
+    .results-summary { margin: 5px 0 22px; color: var(--muted); }
+    .score-panel {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .score-tile { padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: #fbfcfe; }
+    .score-value { display: block; color: var(--navy); font-size: 1.55rem; font-weight: 800; line-height: 1.25; }
+    .score-label { color: var(--muted); font-size: .84rem; }
+    .score-tile.correct .score-value { color: var(--green); }
+    .score-tile.incorrect .score-value { color: var(--red); }
+
+    .results-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; margin-top: 13px; }
+    .result-item {
+      display: flex;
+      min-height: 52px;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .result-item:hover { border-color: var(--navy-soft); }
+    .result-item.correct { border-color: #b5d8c3; background: var(--green-bg); color: #145c3d; }
+    .result-item.incorrect { border-color: #ecc3c5; background: var(--red-bg); color: #8e252e; }
+    .result-item.skipped { background: var(--gray-bg); color: #465468; }
+    .result-number { font-weight: 800; }
+    .result-status { font-size: .77rem; }
+    .results-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+
+    .review-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 17px; }
+    .review-status { margin: 0; padding: 5px 10px; border-radius: 999px; font-size: .8rem; font-weight: 750; }
+    .review-status.correct { background: var(--green-bg); color: var(--green); }
+    .review-status.incorrect { background: var(--red-bg); color: var(--red); }
+    .review-status.skipped { background: var(--gray-bg); color: #465468; }
+    .review-option { cursor: default; }
+    .review-option input { pointer-events: none; }
+    .review-actions { margin-top: 20px; }
+
+    .site-footer {
+      position: fixed;
+      z-index: 5;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      min-height: 58px;
+      display: grid;
+      place-items: center;
+      padding: 10px 18px;
+      border-top: 1px solid #d5deea;
+      background: rgb(255 255 255 / 96%);
+      box-shadow: 0 -5px 18px rgb(18 35 63 / 6%);
+      color: var(--muted);
+      font-size: .87rem;
+      text-align: center;
+    }
+
+    .site-footer a { color: var(--navy); font-weight: 750; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .site-footer a:hover { color: var(--accent-dark); }
+
+    @media (max-width: 760px) {
+      .site-header { padding: 22px 18px; }
+      .header-inner, main { width: min(100% - 28px, 600px); }
+      main { padding-top: 19px; }
+      .quiz-layout { grid-template-columns: 1fr; gap: 13px; }
+      .navigator { position: static; padding: 15px; }
+      .question-grid { display: flex; max-height: none; gap: 7px; overflow-x: auto; overflow-y: hidden; padding-bottom: 5px; }
+      .question-jump { flex: 0 0 40px; min-height: 40px; }
+      .progress-block { margin-top: 10px; }
+      .score-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .results-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .question-controls { align-items: stretch; flex-direction: column; }
+      .control-group { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .control-group .button { width: 100%; }
+      .question-controls > .button { width: 100%; }
+    }
+
+    @media (max-width: 380px) {
+      .results-list { grid-template-columns: 1fr; }
+      .option-row { padding-inline: 11px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <p class="eyebrow">Mid-Term Examination</p>
+      <h1>Calculus and Analytical Geometry</h1>
+      <p class="header-subtitle">80 multiple-choice questions · Choose one answer for each question</p>
+    </div>
+  </header>
+
+  <main id="main">
+    <div id="storage-notice" class="notice" role="status" hidden></div>
+    <section id="quiz-screen" class="screen" aria-label="Quiz">
+      <div class="quiz-layout">
+        <aside class="card navigator" aria-label="Question navigator">
+          <h2>Questions</h2>
+          <p class="navigator-caption">Select a number to jump to it.</p>
+          <nav id="question-grid" class="question-grid" aria-label="Quiz questions"></nav>
+          <div class="progress-block">
+            <div class="progress-label"><span>Progress</span><strong id="progress-count">0 / 80 answered</strong></div>
+            <progress id="progress" value="0" max="80" aria-label="Questions answered"></progress>
+          </div>
+        </aside>
+        <article class="card question-card" aria-live="polite">
+          <div id="question-content"></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="results-screen" class="screen" aria-label="Quiz results" hidden>
+      <article class="card results-card">
+        <h2 class="results-heading">Quiz results</h2>
+        <p id="results-summary" class="results-summary"></p>
+        <div id="score-panel" class="score-panel"></div>
+        <h3 class="section-title">Review every question</h3>
+        <p class="navigator-caption">Choose any question to see your answer and reveal the correct one.</p>
+        <div id="results-list" class="results-list"></div>
+        <div class="results-actions">
+          <button id="retake-button" class="button button-primary" type="button">Retake Quiz</button>
+        </div>
+      </article>
+    </section>
+
+    <section id="review-screen" class="screen" aria-label="Question review" hidden>
+      <article class="card question-card">
+        <div id="review-content"></div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Developed by <a href="https://balochcoder.com" target="_blank" rel="noopener">balochcoder.com</a></span>
+  </footer>
+
+  <script>
+    "use strict";
+    const questions = [
+      {n:1,q:"Which of the following numbers is irrational?",o:["0.333…","√2","3/7","−5"],a:1},
+      {n:2,q:"The repeating decimal 0.272727… is equal to",o:["3/11","27/100","2/7","7/27"],a:0},
+      {n:3,q:"The fraction 7/40 has a terminating decimal because the prime factors of 40 are",o:["only 2 and 3","only 3 and 5","2, 3 and 5","only 2 and 5"],a:3},
+      {n:4,q:"The interval [−3, 5) in set-builder notation is",o:["{x : −3 < x ≤ 5}","{x : −3 < x < 5}","{x : −3 ≤ x ≤ 5}","{x : −3 ≤ x < 5}"],a:3},
+      {n:5,q:"The set {x : x ≤ 2} is written in interval notation as",o:["(−∞, 2)","[2, ∞)","(2, ∞)","(−∞, 2]"],a:3},
+      {n:6,q:"If A = [−4, 2) and B = (1, 6], then A ∩ B is",o:["[1, 2]","(1, 2]","(1, 2)","[−4, 6]"],a:2},
+      {n:7,q:"If A = [−4, 2) and B = (1, 6], then A ∪ B is",o:["[−4, 6]","(−4, 6)","[−4, 6)","(1, 2)"],a:0},
+      {n:8,q:"The value of |−7| + |3 − 8| is",o:["2","−12","12","−2"],a:2},
+      {n:9,q:"The solution of |x − 2| < 3 is",o:["(−1, 5)","(−∞, −1) ∪ (5, ∞)","(−5, 1)","[−1, 5]"],a:0},
+      {n:10,q:"The solution of |x − 2| ≥ 3 is",o:["(−∞, −1] ∪ [5, ∞)","[−1, 5]","(−1, 5)","(−∞, −1) ∪ (5, ∞)"],a:0},
+      {n:11,q:"The distance between the points −3 and 5 on the real line is",o:["8","2","−8","15"],a:0},
+      {n:12,q:"The solution of |2x − 3| ≤ 5 is",o:["x ≤ −1 or x ≥ 4","−4 ≤ x ≤ 1","−1 ≤ x ≤ 4","1 ≤ x ≤ 4"],a:2},
+      {n:13,q:"The solution of 3x − 5 < 10 is",o:["x < 5","x > 5","x < 15","x > 3"],a:0},
+      {n:14,q:"The solution of −2x > 6 is",o:["x > −3","x > 3","x < 3","x < −3"],a:3},
+      {n:15,q:"The inequality x² − x − 6 > 0 is true when",o:["−2 < x < 3","x < −3 or x > 2","x < −2 or x > 3","−3 < x < 2"],a:2},
+      {n:16,q:"The point (−4, 3) lies in the",o:["first quadrant","third quadrant","fourth quadrant","second quadrant"],a:3},
+      {n:17,q:"Which point lies on the y-axis?",o:["(0, −5)","(−5, 0)","(2, 2)","(5, −1)"],a:0},
+      {n:18,q:"The distance between P(−2, 1) and Q(4, 9) is",o:["10","8","14","√28"],a:0},
+      {n:19,q:"The midpoint of the segment joining (−2, 1) and (4, 9) is",o:["(1, 5)","(3, 4)","(2, 10)","(−1, 4)"],a:0},
+      {n:20,q:"The midpoint of AB is M(3, −2) and A is (7, 4). The point B is",o:["(5, 1)","(−1, −8)","(1, −8)","(−1, 8)"],a:1},
+      {n:21,q:"The slope of the line through (3, −1) and (7, 7) is",o:["1/2","2","−2","4"],a:1},
+      {n:22,q:"The slope of a horizontal line is",o:["1","0","undefined","−1"],a:1},
+      {n:23,q:"The slope of a vertical line is",o:["0","1","−1","undefined"],a:3},
+      {n:24,q:"The lines y = 3x + 2 and y = −x/3 + 5 are",o:["parallel","perpendicular","identical","neither parallel nor perpendicular"],a:1},
+      {n:25,q:"The equation of the line with slope 2 passing through (1, 3) is",o:["y = 2x + 3","y = 2x + 1","y = 2x − 1","y = x + 2"],a:1},
+      {n:26,q:"The slope of the line 4x − 3y + 12 = 0 is",o:["−4/3","4/3","3/4","4"],a:1},
+      {n:27,q:"The x-intercept of the line 2x + 3y = 6 is",o:["2","6","3","−3"],a:2},
+      {n:28,q:"The y-intercept of the line 2x + 3y = 6 is",o:["3","2","6","−2"],a:1},
+      {n:29,q:"Moving from (1, 2) to (5, 5), the increments are",o:["Δx = 3 and Δy = 4","Δx = 6 and Δy = 7","Δx = 4 and Δy = 3","Δx = 4 and Δy = 7"],a:2},
+      {n:30,q:"The average rate of change of f(x) = x² on [1, 3] is",o:["8","4","2","3"],a:1},
+      {n:31,q:"A function from A to B assigns to each element of A",o:["at least one element of B","at most two elements of B","no element of B","exactly one element of B"],a:3},
+      {n:32,q:"The relation {(1,2), (2,3), (3,2), (4,5)} is",o:["a one-to-one function","not a function","a function with domain {2, 3, 5}","a function but not one-to-one"],a:3},
+      {n:33,q:"The relation {(1,2), (1,3), (2,4)} is not a function because",o:["the input 2 has no output","the input 1 has two outputs","the outputs are different","there are only three pairs"],a:1},
+      {n:34,q:"If f(x) = x² − 3x + 4, then f(−2) equals",o:["14","6","−6","2"],a:0},
+      {n:35,q:"If f(x) = x² − 3x + 4, then f(a + 1) equals",o:["a² + 4","a² − 3a + 5","a² − a + 4","a² − a + 2"],a:3},
+      {n:36,q:"If 2ˣ = 1/8, then x equals",o:["−3","3","−8","1/3"],a:0},
+      {n:37,q:"The vertical line test is used to decide whether",o:["a function is one-to-one","a function has an inverse","a graph represents a function","a graph is a straight line"],a:2},
+      {n:38,q:"The horizontal line test is used to decide whether",o:["a graph is a function","a function is one-to-one","a function is continuous","a graph has an intercept"],a:1},
+      {n:39,q:"The function f(x) = x² on ℝ is",o:["many-to-one","one-to-one","not a function","one-to-many"],a:0},
+      {n:40,q:"Which relation does NOT define y as a function of x?",o:["y = x² − 4","y = x³ + 1","x² + y² = 9","y = |x − 1|"],a:2},
+      {n:41,q:"If f(x) = 2x + 1 for x < 1, x² for 1 ≤ x ≤ 3, and 12 − x for x > 3, then f(5) is",o:["11","25","17","7"],a:3},
+      {n:42,q:"For the same piecewise function, f(3) is",o:["7","6","9","3"],a:2},
+      {n:43,q:"The graph of f(x) = |x| has the shape of",o:["a parabola","a straight line","the letter V","a semicircle"],a:2},
+      {n:44,q:"The vertex of the parabola f(x) = x² − 4x + 3 is",o:["(−2, −1)","(2, 1)","(2, −1)","(4, 3)"],a:2},
+      {n:45,q:"The function f(x) = x³ is",o:["many-to-one","one-to-one","not a function","an even function"],a:1},
+      {n:46,q:"(f ∘ g)(x) means",o:["g(f(x))","f(x) · g(x)","f(g(x))","f(x) + g(x)"],a:2},
+      {n:47,q:"If f(x) = 2x + 3 and g(x) = x², then (f ∘ g)(x) is",o:["(2x + 3)²","2x³ + 3","2x² + 3","x² + 2x + 3"],a:2},
+      {n:48,q:"If f(x) = 2x + 3 and g(x) = x², then (g ∘ f)(x) is",o:["2x² + 3","4x² + 9","2x² + 6x + 3","(2x + 3)²"],a:3},
+      {n:49,q:"With f(x) = 2x + 3 and g(x) = x², the value of (f ∘ g)(2) is",o:["49","11","7","14"],a:1},
+      {n:50,q:"With f(x) = 2x + 3 and g(x) = x², the value of (g ∘ f)(2) is",o:["11","16","49","25"],a:2},
+      {n:51,q:"If f(x) = x + 5 and g(x) = 3x, then (f ∘ g)(x) is",o:["3x + 15","3x + 5","x + 15","4x + 5"],a:1},
+      {n:52,q:"If f(x) = 1/x and g(x) = x + 2, the domain of f ∘ g is",o:["all real x except 0","all real x except 2","all real numbers","all real x except −2"],a:3},
+      {n:53,q:"If f(x) = √x and g(x) = x − 4, the domain of f ∘ g is",o:["[0, ∞)","[4, ∞)","(−∞, 4]","(4, ∞)"],a:1},
+      {n:54,q:"If f(x) = 2x − 1, then (f ∘ f)(x) is",o:["4x − 1","2x − 2","4x − 3","4x² − 1"],a:2},
+      {n:55,q:"Let f(a) = a + 1, g(b) = b² + 2, h(c) = 7c − 2. Then (g ∘ f)(−2) is",o:["3","7","1","6"],a:0},
+      {n:56,q:"With the same f, g, h, the value of (g ∘ h)(f(3)), that is, (g ∘ h) ∘ f (3), is",o:["26","50","678","28"],a:2},
+      {n:57,q:"For f(x) = x² and g(x) = x + 1, which statement is correct?",o:["f ∘ g = g ∘ f","(f ∘ g)(x) = x² + 1","(g ∘ f)(x) = (x + 1)²","f ∘ g ≠ g ∘ f"],a:3},
+      {n:58,q:"The inverse of f(x) = 5 − 2x is",o:["(5 − x)/2","(x − 5)/2","5 + 2x","1/(5 − 2x)"],a:0},
+      {n:59,q:"The inverse of f(x) = (x − 4)/3 is",o:["3x + 4","3x − 4","(x + 4)/3","3/(x − 4)"],a:0},
+      {n:60,q:"The inverse of f(x) = x³ + 1 is",o:["∛x − 1","(x − 1)³","∛(x + 1)","∛(x − 1)"],a:3},
+      {n:61,q:"The inverse of f(x) = (x + 2)/(x − 3) is",o:["(x − 3)/(x + 2)","(3x + 2)/(x − 1)","(3x − 2)/(x + 1)","(2x + 3)/(x − 1)"],a:1},
+      {n:62,q:"The inverse of f(x) = √(x − 1), x ≥ 1, is",o:["x² − 1 for x ≥ 0","x² + 1 for x ≥ 1","1/√(x − 1)","x² + 1 for x ≥ 0"],a:3},
+      {n:63,q:"The inverse of f(x) = x² + 3, x ≥ 0, is",o:["√(x + 3), x ≥ −3","√(x − 3), x ≥ 3","−√(x − 3), x ≥ 3","(x − 3)², x ≥ 0"],a:1},
+      {n:64,q:"Which function has an inverse on all of ℝ?",o:["f(x) = x²","f(x) = |x|","f(x) = x³","f(x) = 5"],a:2},
+      {n:65,q:"If f(x) = 2x − 3, then f⁻¹(5) equals",o:["4","7","1","13/2"],a:0},
+      {n:66,q:"The domain of f⁻¹ is equal to",o:["the domain of f","the range of f","the codomain of f","the zeros of f"],a:1},
+      {n:67,q:"The graph of f⁻¹ is the reflection of the graph of f in the line",o:["y = 0","x = 0","y = −x","y = x"],a:3},
+      {n:68,q:"If f(x) = 4x − 1, then f⁻¹(x) is",o:["1/(4x − 1)","4x + 1","(x − 1)/4","(x + 1)/4"],a:3},
+      {n:69,q:"Why does f(x) = x² − 4 on ℝ have no inverse?",o:["It is not one-to-one, e.g. f(−1) = f(1)","It is not defined at 0","Its range is all real numbers","It is a polynomial"],a:0},
+      {n:70,q:"The domain of f(x) = √(x − 3) is",o:["(3, ∞)","(−∞, 3]","ℝ","[3, ∞)"],a:3},
+      {n:71,q:"The range of f(x) = √(x − 3) is",o:["[0, ∞)","[3, ∞)","(−∞, 0]","ℝ"],a:0},
+      {n:72,q:"The domain of f(x) = 1/(x − 4) is",o:["ℝ except 0","ℝ","(4, ∞)","ℝ except 4"],a:3},
+      {n:73,q:"The range of f(x) = (x + 1)/(x − 2) is",o:["ℝ except 2","ℝ except 0","ℝ except 1","ℝ"],a:2},
+      {n:74,q:"The domain of f(x) = √(9 − x²) is",o:["[−3, 3]","(−3, 3)","(−∞, −3] ∪ [3, ∞)","[0, 3]"],a:0},
+      {n:75,q:"The range of f(x) = √(9 − x²) is",o:["[0, 3]","[−3, 3]","[0, 9]","[−3, 0]"],a:0},
+      {n:76,q:"The domain of f(x) = 1/√(x − 1) is",o:["[1, ∞)","(1, ∞)","ℝ except 1","(−∞, 1)"],a:1},
+      {n:77,q:"The domain of f(x) = √(x + 2)/(x − 1) is",o:["(−2, ∞)","[−2, ∞)","[−2, 1) ∪ (1, ∞)","ℝ except 1"],a:2},
+      {n:78,q:"The domain of f(x) = √(x² − 4) is",o:["[−2, 2]","(−2, 2)","(−∞, −2] ∪ [2, ∞)","[2, ∞)"],a:2},
+      {n:79,q:"The range of f(x) = x² − 6x + 11 is",o:["[3, ∞)","[11, ∞)","ℝ","[2, ∞)"],a:3},
+      {n:80,q:"The domain of f(x) = 2/(x² − 9) is",o:["ℝ except 9","ℝ except −3 and 3","ℝ except 3","ℝ"],a:1}
+    ];
+
+    const answerKeyFromPdf = "B A D D D C A C A A A C A D C D A A A B B B D B B B C B C B D D B A D A C B A C D C C C B C C D B C B D B C A C D A A D B D B C A B D D A D A D C A A B C C D B".split(" ");
+    const STORAGE_KEY = "calculus-midterm-quiz-v1";
+    const app = document.getElementById("main");
+    const labels = ["A", "B", "C", "D"];
+    let storageAvailable = true;
+    let state = loadState();
+
+    function validateQuizData() {
+      if (questions.length !== 80 || questions.some((question, index) =>
+        question.n !== index + 1 || question.o.length !== 4 || question.a < 0 || question.a > 3
+      )) throw new Error("The quiz data must contain 80 numbered questions with four options each.");
+      if (answerKeyFromPdf.length !== questions.length ||
+        questions.some((question, index) => labels[question.a] !== answerKeyFromPdf[index])) {
+        throw new Error("The embedded answer key does not match the answer key in the PDF.");
+      }
+    }
+
+    function emptyState() {
+      return { answers: {}, submitted: false, activeQuestion: 1, reviewQuestion: 1, revealed: {} };
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) return emptyState();
+        const parsed = JSON.parse(saved);
+        const validAnswers = parsed && parsed.answers && typeof parsed.answers === "object" &&
+          Object.entries(parsed.answers).every(([number, answer]) =>
+            questions.some(question => String(question.n) === number) &&
+            Number.isInteger(answer) && answer >= 0 && answer < 4
+          );
+        if (!validAnswers || typeof parsed.submitted !== "boolean") {
+          throw new Error("Saved quiz progress is invalid.");
+        }
+        return {
+          answers: parsed.answers,
+          submitted: parsed.submitted,
+          activeQuestion: Number.isInteger(parsed.activeQuestion) && parsed.activeQuestion >= 1 && parsed.activeQuestion <= 80 ? parsed.activeQuestion : 1,
+          reviewQuestion: Number.isInteger(parsed.reviewQuestion) && parsed.reviewQuestion >= 1 && parsed.reviewQuestion <= 80 ? parsed.reviewQuestion : 1,
+          revealed: parsed.revealed && typeof parsed.revealed === "object" ? parsed.revealed : {}
+        };
+      } catch (error) {
+        showStorageNotice(`Saved progress could not be loaded: ${error.message}. Your quiz will start fresh.`);
+        return emptyState();
+      }
+    }
+
+    function persist() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (error) {
+        storageAvailable = false;
+        showStorageNotice(`Progress could not be saved in this browser: ${error.message}`);
+      }
+    }
+
+    function showStorageNotice(message) {
+      const notice = document.getElementById("storage-notice");
+      notice.textContent = message;
+      notice.hidden = false;
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, character => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[character]);
+    }
+
+    function answeredCount() {
+      return Object.keys(state.answers).length;
+    }
+
+    function statusFor(question) {
+      if (!Object.hasOwn(state.answers, question.n)) return "skipped";
+      return state.answers[question.n] === question.a ? "correct" : "incorrect";
+    }
+
+    function renderQuestionGrid() {
+      document.getElementById("question-grid").innerHTML = questions.map(question => {
+        const current = question.n === state.activeQuestion;
+        const answered = Object.hasOwn(state.answers, question.n);
+        return `<button type="button" class="question-jump${current ? " current" : ""}${answered ? " answered" : ""}" data-jump="${question.n}" aria-label="Question ${question.n}${answered ? ", answered" : ", unanswered"}"${current ? ' aria-current="step"' : ""}>${question.n}</button>`;
+      }).join("");
+      const count = answeredCount();
+      document.getElementById("progress-count").textContent = `${count} / ${questions.length} answered`;
+      const progress = document.getElementById("progress");
+      progress.value = count;
+      progress.setAttribute("aria-valuetext", `${count} of ${questions.length} questions answered`);
+    }
+
+    function renderQuestionContent() {
+      const question = questions[state.activeQuestion - 1];
+      const revealed = Boolean(state.revealed[question.n]);
+      document.getElementById("question-content").innerHTML = `
+        <p class="question-kicker">Question ${question.n} of ${questions.length}</p>
+        <h2 class="question-prompt math">${escapeHtml(question.q)}</h2>
+        <div id="question-options" class="option-list" role="radiogroup" aria-label="Answer choices for question ${question.n}">
+          ${question.o.map((option, index) => {
+            const selected = state.answers[question.n] === index;
+            const correct = revealed && question.a === index;
+            const wrong = revealed && selected && question.a !== index;
+            return `
+            <div class="option-row${selected ? " selected" : ""}${correct ? " correct-choice" : ""}${wrong ? " incorrect-choice" : ""}">
+              <input id="q${question.n}-option${index}" type="radio" name="question-${question.n}" value="${index}" data-answer="${question.n}"${state.answers[question.n] === index ? " checked" : ""}>
+              <label class="option-letter" for="q${question.n}-option${index}">${labels[index]}.</label>
+              <label class="option-copy math" for="q${question.n}-option${index}">${escapeHtml(option)}</label>
+              ${correct ? '<span class="choice-note">Correct answer</span>' : selected ? '<span class="choice-note">Your answer</span>' : ""}
+            </div>`;
+          }).join("")}
+        </div>
+        <div class="question-controls">
+          <div class="control-group">
+            <button type="button" class="button button-secondary" data-step="-1"${question.n === 1 ? " disabled" : ""}>Previous</button>
+            <button type="button" class="button button-secondary" data-step="1"${question.n === questions.length ? " disabled" : ""}>Next</button>
+          </div>
+          <div class="control-group">
+            <button type="button" class="button button-accent" id="show-question-answer" aria-expanded="${revealed}" aria-controls="question-options">${revealed ? "Hide Answer" : "Show Answer"}</button>
+            <button type="button" class="button button-primary" id="submit-button">Submit Quiz</button>
+          </div>
+        </div>`;
+    }
+
+    function renderResults() {
+      const counts = { correct: 0, incorrect: 0, skipped: 0 };
+      questions.forEach(question => { counts[statusFor(question)] += 1; });
+      const percent = Math.round(counts.correct / questions.length * 100);
+      document.getElementById("results-summary").textContent = `You scored ${counts.correct} out of ${questions.length} (${percent}%).`;
+      document.getElementById("score-panel").innerHTML = `
+        <div class="score-tile"><span class="score-value">${counts.correct}/${questions.length}</span><span class="score-label">Score</span></div>
+        <div class="score-tile"><span class="score-value">${percent}%</span><span class="score-label">Percentage</span></div>
+        <div class="score-tile correct"><span class="score-value">${counts.correct}</span><span class="score-label">Correct</span></div>
+        <div class="score-tile incorrect"><span class="score-value">${counts.incorrect}</span><span class="score-label">Incorrect · ${counts.skipped} skipped</span></div>`;
+      document.getElementById("results-list").innerHTML = questions.map(question => {
+        const status = statusFor(question);
+        const label = status === "correct" ? "Correct" : status === "incorrect" ? "Incorrect" : "Skipped";
+        return `<button type="button" class="result-item ${status}" data-review="${question.n}" aria-label="Review question ${question.n}: ${label}">
+          <span class="result-number">${question.n}.</span><span class="result-status">${label}</span>
+        </button>`;
+      }).join("");
+    }
+
+    function renderReview() {
+      const question = questions[state.reviewQuestion - 1];
+      const status = statusFor(question);
+      const label = status === "correct" ? "Correct" : status === "incorrect" ? "Incorrect" : "Skipped";
+      const revealed = Boolean(state.revealed[question.n]);
+      document.getElementById("review-content").innerHTML = `
+        <div class="review-top">
+          <button type="button" class="button button-secondary" id="back-results">Back to Results</button>
+          <p class="review-status ${status}">${label}</p>
+        </div>
+        <p class="question-kicker">Question ${question.n} of ${questions.length}</p>
+        <h2 class="question-prompt math">${escapeHtml(question.q)}</h2>
+        <div class="option-list" aria-label="Answer choices for question ${question.n}">
+          ${question.o.map((option, index) => {
+            const selected = state.answers[question.n] === index;
+            const correct = revealed && question.a === index;
+            const wrong = revealed && selected && question.a !== index;
+            const note = correct ? `<span class="choice-note">Correct answer</span>` :
+              selected ? `<span class="choice-note">Your answer</span>` : "";
+            return `<div class="option-row review-option${selected ? " selected" : ""}${correct ? " correct-choice" : ""}${wrong ? " incorrect-choice" : ""}">
+              <input type="radio" name="review-question-${question.n}"${selected ? " checked" : ""} disabled aria-label="${labels[index]}${selected ? ", your answer" : ""}${correct ? ", correct answer" : ""}">
+              <span class="option-letter">${labels[index]}.</span><span class="option-copy math">${escapeHtml(option)}</span>${note}
+            </div>`;
+          }).join("")}
+        </div>
+        <div class="control-group review-actions">
+          <button type="button" class="button button-accent" id="show-answer">${revealed ? "Hide Answer" : "Show Answer"}</button>
+          ${question.n > 1 ? `<button type="button" class="button button-secondary" data-review="${question.n - 1}">Previous Question</button>` : ""}
+          ${question.n < questions.length ? `<button type="button" class="button button-secondary" data-review="${question.n + 1}">Next Question</button>` : ""}
+        </div>`;
+    }
+
+    function render() {
+      document.getElementById("quiz-screen").hidden = state.submitted || state.screen === "results" || state.screen === "review";
+      document.getElementById("results-screen").hidden = !state.submitted || state.screen !== "results";
+      document.getElementById("review-screen").hidden = !state.submitted || state.screen !== "review";
+      if (!state.submitted || state.screen === "quiz") {
+        renderQuestionGrid();
+        renderQuestionContent();
+      }
+      if (state.submitted && state.screen === "results") renderResults();
+      if (state.submitted && state.screen === "review") renderReview();
+    }
+
+    function submitQuiz() {
+      const unanswered = questions.length - answeredCount();
+      if (unanswered > 0 && !window.confirm(`You have ${unanswered} unanswered question${unanswered === 1 ? "" : "s"}. Submit the quiz anyway?`)) return;
+      state.submitted = true;
+      state.screen = "results";
+      persist();
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function retakeQuiz() {
+      state = emptyState();
+      state.screen = "quiz";
+      persist();
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    validateQuizData();
+    if (!storageAvailable) showStorageNotice("Progress is not being saved in this browser.");
+    if (state.submitted) state.screen = "results";
+    else state.screen = "quiz";
+    render();
+
+    app.addEventListener("change", event => {
+      const input = event.target.closest("input[data-answer]");
+      if (!input || state.submitted) return;
+      state.answers[input.dataset.answer] = Number(input.value);
+      persist();
+      render();
+      document.getElementById(`q${input.dataset.answer}-option${input.value}`).focus();
+    });
+
+    app.addEventListener("click", event => {
+      const jump = event.target.closest("[data-jump]");
+      if (jump && !state.submitted) {
+        state.activeQuestion = Number(jump.dataset.jump);
+        persist();
+        render();
+        document.querySelector(`#q${state.activeQuestion}-option${state.answers[state.activeQuestion] ?? 0}`)?.focus({ preventScroll: true });
+        return;
+      }
+
+      const step = event.target.closest("[data-step]");
+      if (step && !step.disabled && !state.submitted) {
+        state.activeQuestion = Math.max(1, Math.min(questions.length, state.activeQuestion + Number(step.dataset.step)));
+        persist();
+        render();
+        document.querySelector(`#q${state.activeQuestion}-option${state.answers[state.activeQuestion] ?? 0}`)?.focus({ preventScroll: true });
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+
+      if (event.target.closest("#submit-button")) submitQuiz();
+      if (event.target.closest("#show-question-answer")) {
+        state.revealed[state.activeQuestion] = !state.revealed[state.activeQuestion];
+        persist();
+        render();
+        document.getElementById("show-question-answer").focus();
+      }
+      if (event.target.closest("#retake-button")) retakeQuiz();
+      if (event.target.closest("#back-results")) {
+        state.screen = "results";
+        persist();
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      if (event.target.closest("#show-answer")) {
+        state.revealed[state.reviewQuestion] = !state.revealed[state.reviewQuestion];
+        persist();
+        render();
+      }
+
+      const review = event.target.closest("[data-review]");
+      if (review && state.submitted) {
+        state.reviewQuestion = Number(review.dataset.review);
+        state.screen = "review";
+        persist();
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+  </script>
+</body>
+</html>
